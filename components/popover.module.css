@@ -1,0 +1,36 @@
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.arrow {
+  border-bottom: 10px solid #000;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  height: 0;
+  margin: 0 auto;
+  width: 0;
+}
+
+.content {
+  background-color: white;
+  border-radius: 20px;
+  padding: 20px;
+  z-index: 99999;
+}
+
+.popover {
+  animation: fadeIn 0.5s;
+  min-width: 300px;
+  position: fixed;
+  z-index: 9999999;
+}
+
+.title {
+  margin: 0;
+  text-align: center;
+}

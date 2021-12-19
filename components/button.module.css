@@ -1,0 +1,17 @@
+.button {
+  background: none;
+  background-color: #735CDD;
+  border: none;
+  border-radius: 30px;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 15px 30px 15px 30px;
+}
+
+.button.icon {
+  background-repeat: no-repeat;
+  background-size: 36px auto;
+  background-position: center left 15px;
+  padding: 15px 30px 15px 61px;
+}

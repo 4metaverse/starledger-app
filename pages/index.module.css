@@ -1,0 +1,60 @@
+.constellation {
+  color: white;
+  font-size: 12px;
+}
+
+.footer {
+  bottom: 20px;
+  color: white;
+  font-size: 12px;
+  position: fixed;
+  right: 20px;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
+  z-index: 999;
+}
+
+.footer a:hover {
+  text-decoration: none;
+}
+
+.sky {
+  margin-top: 100px;
+}
+
+.starInfo {
+  margin-bottom: 20px;
+}
+
+.starInfoField {
+  display: flex;
+}
+
+.starInfoKey,
+.starInfoValue {
+  width: 50%;
+}
+
+.star {
+  cursor: pointer;
+}
+
+.star.selected {
+  stroke: #735CDD;
+  stroke-width: 1px;
+}
+
+.zoom {
+  left: 20px;
+  position: fixed;
+  top: 110px;
+}
+
+.zoom button {
+  border-radius: 5px;
+  display: block;
+  font-size: 18px;
+  height: 50px;
+  margin: 10px 0;
+  width: 50px;
+}

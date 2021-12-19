@@ -1,0 +1,36 @@
+* {
+  font-family: Verdana, sans-serif;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+body {
+  background-color: #1e1e1e;
+  margin: 0;
+}
+
+button {
+  background: none;
+  background-color: white;
+  border: none;
+  color: black;
+  cursor: pointer;
+  transition: .25s transform;
+}
+
+button:hover {
+  transform: scale(1.1);
+}
+
+button:disabled {
+  background-color: black;
+  color: white;
+  cursor: not-allowed;
+}
