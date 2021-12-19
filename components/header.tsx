@@ -10,7 +10,10 @@ const Header = () => {
   const [showModal, setShowModal] = useState(false);
 
   const handleRequest = async () => {
-    setShowModal(false);
+    if (!(await (window as any).ethereum)) {
+      setShowModal(true);
+      return;
+    }
 
     const accounts = await (window as any).ethereum.request({
       method: "eth_requestAccounts",
@@ -22,7 +25,9 @@ const Header = () => {
     <>
       <header className={styles.header}>
         <section className={styles.wrapper}>
-          <h1 className={styles.logo}>metastellar</h1>
+          <h1 className={styles.logo}>
+            Star<span>Ledger</span>
+          </h1>
           {/* <nav className={styles.nav}>
             <ul className={styles.menu}>
               <li className={styles.menuItem}>
@@ -36,26 +41,25 @@ const Header = () => {
               </li>
             </ul>
           </nav> */}
-          <div className={styles.network}>
-            Metis Stardust Testnet
-          </div>
+          <div className={styles.network}>Metis Stardust Testnet</div>
           {account ? (
-            <Button onClick={() => setAccount('')}>Close Wallet</Button>
+            <Button onClick={() => setAccount("")}>Close Wallet</Button>
           ) : (
-            <Button icon="metamask" onClick={() => handleRequest()}>Connect Wallet</Button>
+            <Button icon="metamask" onClick={() => handleRequest()}>
+              Connect Wallet
+            </Button>
           )}
         </section>
       </header>
       <Modal
         onClose={() => setShowModal(false)}
         show={showModal}
-        title="Connect Wallet"
+        title="MetaMask Required"
       >
-        {typeof window !== "undefined" &&
-        typeof (window as any).ethereum !== "undefined"
-          ? "Use MetaMask to login"
-          : "Install MetaMask to login"}
-        <button onClick={handleRequest}>Test</button>
+        <p>
+          A connected wallet via MetaMask is required to continue.{" "}
+          <a href="http://metamask.io">Click here</a> to learn more.
+        </p>
       </Modal>
     </>
   );

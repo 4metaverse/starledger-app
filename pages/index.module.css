@@ -1,6 +1,14 @@
-.constellation {
-  color: white;
-  font-size: 12px;
+@keyframes fade {
+  0% {
+    opacity: .1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.constellations {
+  pointer-events: none;
 }
 
 .footer {
@@ -26,6 +34,15 @@
   margin-bottom: 20px;
 }
 
+.starInfoBuy {
+  text-align: center;
+}
+
+.starInfoBuy button {
+  background-color: #c1ab70;
+  color: black;
+}
+
 .starInfoField {
   display: flex;
 }
@@ -40,8 +57,9 @@
 }
 
 .star.selected {
-  stroke: #735CDD;
-  stroke-width: 1px;
+  animation: fade 2s infinite linear;
+  stroke: #c1ab70;
+  stroke-width: 0.5px;
 }
 
 .zoom {

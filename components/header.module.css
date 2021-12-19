@@ -13,7 +13,20 @@
 }
 
 .logo {
+  background-image: url(/images/starledger-logo.svg);
+  background-position: center left;
+  background-repeat: no-repeat;
+  background-size: auto 36px;
   flex-grow: 1;
+  font-size: 22px;
+  font-weight: normal;
+  height: 36px;
+  padding-left: 37px;
+  text-transform: uppercase;
+}
+
+.logo span {
+  color: #c1ab70;
 }
 
 .menu {
@@ -34,4 +47,10 @@
   display: flex;
   margin: 0 auto;
   width: 100%;
+}
+
+@media screen and (max-width: 800px) {
+  .network {
+    display: none;
+  }
 }

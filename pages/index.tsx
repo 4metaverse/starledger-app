@@ -228,9 +228,7 @@ function IndexPage() {
       "0x8BF576e789c14a6578DE1cAe7E3Cea6fa57b0d83"
     );
 
-    await NameContract.methods
-      .setGreeting("oy")
-      .send({ from: accounts[0] });
+    await NameContract.methods.setGreeting("oy").send({ from: accounts[0] });
   };
 
   const handleKey = (e: KeyboardEvent) => {
@@ -338,52 +336,54 @@ function IndexPage() {
     );
 
     const web3 = new Web3((window as any).ethereum);
-    await (window as any).ethereum.enable();
+    if (await (window as any).ethereum) {
+      await (window as any).ethereum.enable();
 
-    const NameContract = new web3.eth.Contract(
-      [
-        {
-          inputs: [
-            {
-              internalType: "string",
-              name: "_greeting",
-              type: "string",
-            },
-          ],
-          stateMutability: "nonpayable",
-          type: "constructor",
-        },
-        {
-          inputs: [],
-          name: "greet",
-          outputs: [
-            {
-              internalType: "string",
-              name: "",
-              type: "string",
-            },
-          ],
-          stateMutability: "view",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "string",
-              name: "_greeting",
-              type: "string",
-            },
-          ],
-          name: "setGreeting",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-      ] as AbiItem[],
-      "0x8BF576e789c14a6578DE1cAe7E3Cea6fa57b0d83"
-    );
+      const NameContract = new web3.eth.Contract(
+        [
+          {
+            inputs: [
+              {
+                internalType: "string",
+                name: "_greeting",
+                type: "string",
+              },
+            ],
+            stateMutability: "nonpayable",
+            type: "constructor",
+          },
+          {
+            inputs: [],
+            name: "greet",
+            outputs: [
+              {
+                internalType: "string",
+                name: "",
+                type: "string",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+          },
+          {
+            inputs: [
+              {
+                internalType: "string",
+                name: "_greeting",
+                type: "string",
+              },
+            ],
+            name: "setGreeting",
+            outputs: [],
+            stateMutability: "nonpayable",
+            type: "function",
+          },
+        ] as AbiItem[],
+        "0x8BF576e789c14a6578DE1cAe7E3Cea6fa57b0d83"
+      );
 
-    console.log(await NameContract.methods.greet().call());
+      console.log(await NameContract.methods.greet().call());
+    }
   };
 
   useEffect(() => {
@@ -421,7 +421,7 @@ function IndexPage() {
         <defs>
           <radialGradient id="g">
             <stop stopColor="#FFFFFF" offset="0.1" />
-            <stop stopColor="rgba(255,255,255, 0.5)" offset="0.8" />
+            <stop stopColor="rgba(30, 30, 30, 0.5)" offset="0.2" />
           </radialGradient>
           <filter id="sofGlow" width="300%" height="300%" x="-100%" y="-100%">
             <feGaussianBlur in="thicken" stdDeviation="5" result="blurred" />
@@ -454,11 +454,11 @@ function IndexPage() {
               onClick={(e) => handleStar((e as any).target, feature.id)}
               cx={feature.geometry.coordinates[0]}
               cy={feature.geometry.coordinates[1]}
-              r={0.2}
+              r={0.5}
             />
           ))}
         </g>
-        <g>
+        <g className={styles.constellations}>
           {constellations.map((constellation) => (
             <text
               fontSize={1}
@@ -515,7 +515,9 @@ function IndexPage() {
             </span>
           </div>
         </div>
-        <Button onClick={() => handleBuy()}>Buy for Ξ 0.001</Button>
+        <div className={styles.starInfoBuy}>
+          <Button onClick={() => handleBuy()}>Buy for Ξ 0.001</Button>
+        </div>
       </Popover>
       <footer className={styles.footer}>
         <a
