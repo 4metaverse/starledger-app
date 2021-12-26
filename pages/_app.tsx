@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Oauth2Client, HttpClient } from "@metis.io/middleware-client";
+import Head from "next/head";
 import { useRouter } from "next/router";
 
 import Layout from "../components/layout";
@@ -42,7 +43,7 @@ export default function MyApp({ Component, pageProps }) {
           const expiresIn = resData.data.expires_in;
 
           const httpClient = new HttpClient(
-            process.env.NEXT_PUBLIC_APP_ID || "",
+            process.env.POLIS_APP_ID,
             accessToken,
             refreshToken,
             expiresIn
@@ -67,8 +68,13 @@ export default function MyApp({ Component, pageProps }) {
   }, [router.isReady, code]);
 
   return (
-    <Layout>
-      <Component httpClient={httpClient} user={user} {...pageProps} />
-    </Layout>
+    <>
+      <Head>
+        <title>StarLedger</title>
+      </Head>
+      <Layout>
+        <Component httpClient={httpClient} user={user} {...pageProps} />
+      </Layout>
+    </>
   );
 }

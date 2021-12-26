@@ -15,9 +15,7 @@ class MainDocument extends Document {
   render() {
     return (
       <Html>
-        <Head>
-          <title>StarLedger</title>
-        </Head>
+        <Head />
         <body>
           <Main />
           <NextScript />
