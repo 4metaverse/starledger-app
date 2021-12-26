@@ -1,3 +1,4 @@
+import { Oauth2Client } from '@metis.io/middleware-client';
 import { useState } from "react";
 
 import Button from "./button";
@@ -9,7 +10,11 @@ const Header = () => {
   const [account, setAccount] = useState("");
   const [showModal, setShowModal] = useState(false);
 
-  const handleRequest = async () => {
+  const handleConnect = () => {
+    setShowModal(true);
+  };
+
+  const handleMetaMask = async () => {
     if (!(await (window as any).ethereum)) {
       setShowModal(true);
       return;
@@ -19,6 +24,18 @@ const Header = () => {
       method: "eth_requestAccounts",
     });
     setAccount(accounts[0]);
+  };
+
+  const handlePolis = () => {
+    console.log(process.env);
+    console.log(process.env.POLIS_APP_ID);
+    console.log(process.env.POLIS_REDIRECT_URL);
+
+    const oauth2Client = new Oauth2Client();
+		oauth2Client.startOauth2(
+			process.env.POLIS_APP_ID,
+			process.env.POLIS_REDIRECT_URL
+		);
   };
 
   return (
@@ -45,7 +62,7 @@ const Header = () => {
           {account ? (
             <Button onClick={() => setAccount("")}>Close Wallet</Button>
           ) : (
-            <Button icon="metamask" onClick={() => handleRequest()}>
+            <Button onClick={() => handleConnect()}>
               Connect Wallet
             </Button>
           )}
@@ -54,12 +71,19 @@ const Header = () => {
       <Modal
         onClose={() => setShowModal(false)}
         show={showModal}
-        title="MetaMask Required"
+        title="Connect Wallet"
       >
         <p>
-          A connected wallet via MetaMask is required to continue.{" "}
-          <a href="http://metamask.io">Click here</a> to learn more.
+          To use StarLedger, connect your Ethereum wallet using a provider below.
         </p>
+        <div>
+          <Button icon="polis-logo.png" onClick={() => handlePolis()}>
+            Polis
+          </Button>
+          <Button icon="metamask-logo.svg" onClick={() => handleMetaMask()}>
+            MetaMask
+          </Button>
+        </div>
       </Modal>
     </>
   );

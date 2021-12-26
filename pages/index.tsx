@@ -418,19 +418,11 @@ function IndexPage() {
           width: `${359.8019 * zoom * 10}px`,
         }}
       >
-        <defs>
-          <radialGradient id="g">
-            <stop stopColor="#FFFFFF" offset="0.1" />
-            <stop stopColor="rgba(30, 30, 30, 0.5)" offset="0.2" />
-          </radialGradient>
-          <filter id="sofGlow" width="300%" height="300%" x="-100%" y="-100%">
-            <feGaussianBlur in="thicken" stdDeviation="5" result="blurred" />
-          </filter>
-        </defs>
         <g>
           {constellationLines.map((line, lineIndex) =>
             line.geometry.paths.map((path, pathIndex) => (
               <path
+                className={styles.constellation}
                 fill="transparent"
                 key={`${lineIndex}-${pathIndex}`}
                 stroke="#999999"
@@ -449,12 +441,14 @@ function IndexPage() {
                   selectedStar?.id === feature.id ? styles.selected : null
                 )
                 .join(" ")}
-              fill="url(#g)"
+              fill="#FFFFFF"
               key={feature.id}
               onClick={(e) => handleStar((e as any).target, feature.id)}
               cx={feature.geometry.coordinates[0]}
               cy={feature.geometry.coordinates[1]}
               r={0.5}
+              stroke="#1e1e1e"
+              strokeWidth={.75}
             />
           ))}
         </g>
@@ -462,7 +456,7 @@ function IndexPage() {
           {constellations.map((constellation) => (
             <text
               fontSize={1}
-              fill="#FFFFFF"
+              fill="#666666"
               key={constellation.properties.name}
               x={constellation.geometry.coordinates[0]}
               y={constellation.geometry.coordinates[1]}

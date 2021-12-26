@@ -15,7 +15,7 @@ const Button: NextPage<{ icon?: string; onClick: () => void }> = ({
     <button
       className={[styles.button].concat(icon ? styles.icon : null).join(" ")}
       onClick={handleClick}
-      style={{ backgroundImage: icon ? `url(/images/${icon}.svg)` : null }}
+      style={{ backgroundImage: icon ? `url(/images/${icon})` : null }}
     >
       {children}
     </button>

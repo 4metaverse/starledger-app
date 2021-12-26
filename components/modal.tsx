@@ -16,9 +16,9 @@ const Modal: NextPage<{ onClose: () => void; show: boolean; title: string }> =
     return ReactDOM.createPortal(
       <div className={styles.modal}>
         <div className={styles.content}>
-          <h3>{title}</h3>
-          <p>{children}</p>
-          <button onClick={handleCloseClick}>Close</button>
+          <h3 className={styles.title}>{title}</h3>
+          <div>{children}</div>
+          <button className={styles.close} onClick={handleCloseClick}>X</button>
         </div>
       </div>,
       document.getElementById("modal-root")
