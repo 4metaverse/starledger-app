@@ -7,13 +7,34 @@ import Layout from "../components/layout";
 
 import "../styles.css";
 
-export default function MyApp({ Component, pageProps }) {
+export default function StarLedgerApp({ Component, pageProps }) {
   const router = useRouter();
-  console.log(router);
   const { code } = router.query;
 
   const [httpClient, setHttpClient] = useState<HttpClient>();
   const [user, setUser] = useState(null);
+
+  const load = async () => {
+    if (!sessionStorage.getItem("polis")) {
+      return;
+    }
+
+    const { accessToken, refreshToken, expiresIn } = JSON.parse(
+      sessionStorage.getItem("polis")
+    );
+
+    const httpClient = new HttpClient(
+      process.env.POLIS_APP_ID,
+      accessToken,
+      refreshToken,
+      expiresIn
+    );
+
+    setHttpClient(httpClient);
+
+    const oauth2Client = new Oauth2Client();
+    setUser(await oauth2Client.getUserInfoAsync(accessToken));
+  };
 
   useEffect(() => {
     console.log(user);
@@ -26,13 +47,11 @@ export default function MyApp({ Component, pageProps }) {
     }
 
     const fetchData = async () => {
-      try {
-        if (!code) {
-          console.log(code);
-          console.log("error code");
-          return;
-        }
+      if (!code) {
+        return;
+      }
 
+      try {
         const res = await fetch(`/api/metis?code=${code}`);
         const resData = await res.json();
 
@@ -41,6 +60,11 @@ export default function MyApp({ Component, pageProps }) {
           const accessToken = resData.data.access_token;
           const refreshToken = resData.data.refresh_token;
           const expiresIn = resData.data.expires_in;
+
+          sessionStorage.setItem(
+            "polis",
+            JSON.stringify({ accessToken, refreshToken, expiresIn })
+          );
 
           const httpClient = new HttpClient(
             process.env.POLIS_APP_ID,
@@ -66,6 +90,10 @@ export default function MyApp({ Component, pageProps }) {
 
     fetchData();
   }, [router.isReady, code]);
+
+  useEffect(() => {
+    load();
+  }, []);
 
   return (
     <>

@@ -31,12 +31,9 @@ const Popover: NextPage<{
   };
 
   const resize = () => {
-      console.log(target);
     if (!popoverRef.current || !target) {
       return;
     }
-
-    console.log('resize');
 
     const popoverRect = popoverRef.current.getBoundingClientRect();
     const targetRect = target.getBoundingClientRect();
