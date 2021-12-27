@@ -136,20 +136,20 @@ function IndexPage() {
     }
   };
 
+  const handleMessage = ({ data }) => {
+    console.log(data);
+
+    if (data.type === 'selectStar') {
+      setSelectedStar(features.find((f) => f.id === data.data.id));
+    }
+  };
+
   const handleSearchResult = (id: number) => {
     setSelectedStar(features.find((f) => f.id === id));
     setSearchResults([]);
     setSearchTerms('');
-  };
 
-  const handleStar = (event: CustomEvent) => {
-    console.log("handleStar");
-    console.log(event.detail.id);
-    console.log(features);
-
-    console.log(features.find((f) => f.id === event.detail.id));
-
-    setSelectedStar(features.find((f) => f.id === event.detail.id));
+    starRef.current.contentWindow.window.postMessage({ id });
   };
 
   const load = async () => {
@@ -303,10 +303,10 @@ function IndexPage() {
   }, []);
 
   useEffect(() => {
-    window.addEventListener("selectStar", handleStar);
+    window.addEventListener("message", handleMessage);
 
     return () => {
-      window.removeEventListener("selectStar", handleStar);
+      window.removeEventListener("message", handleMessage);
     };
   }, [features]);
 
@@ -346,6 +346,7 @@ function IndexPage() {
         frameBorder={0}
         ref={starRef}
         src="https://connect-app.starledger-map.pages.dev"
+        // src="http://localhost:3002"
       ></iframe>
       <div className={styles.search}>
         <input
