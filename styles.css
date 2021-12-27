@@ -1,3 +1,16 @@
+@font-face {
+  font-family: Futura;
+  src: url("/fonts/FuturaLight.woff2") format("woff2"),
+    url("/fonts/FuturaLight.woff") format("woff");
+}
+
+@font-face {
+  font-family: Futura;
+  src: url("/fonts/FuturaBold.woff2") format("woff2"),
+    url("/fonts/FuturaBold.woff") format("woff");
+  font-weight: bold;
+}
+
 * {
   font-family: Futura, sans-serif;
 }
@@ -22,7 +35,7 @@ button {
   border: none;
   color: black;
   cursor: pointer;
-  transition: .25s transform;
+  transition: 0.25s transform;
 }
 
 button:hover {
