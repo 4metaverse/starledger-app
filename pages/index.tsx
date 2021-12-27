@@ -3,7 +3,6 @@ import Web3 from "web3";
 import { AbiItem } from "web3-utils";
 
 import Button from "../components/button";
-import Popover from "../components/popover";
 
 import styles from "./index.module.css";
 
@@ -52,6 +51,14 @@ function IndexPage() {
       type: "Feature";
     }[]
   >([]);
+  const [hideSearchResults, setHideSearchResults] = useState(true);
+  const [searchTerms, setSearchTerms] = useState("");
+  const [searchResults, setSearchResults] = useState<
+    {
+      id: number;
+      name: string;
+    }[]
+  >([]);
   const [selectedStar, setSelectedStar] = useState<{
     geometry: {
       coordinates: number[];
@@ -69,10 +76,7 @@ function IndexPage() {
   }>();
   const [zoom, setZoom] = useState(1);
 
-  const [showPopover, setShowPopover] = useState(false);
-  const [popoverTarget, setPopoverTarget] = useState<HTMLElement>();
-
-  const starRef = useRef<SVGSVGElement>();
+  const starRef = useRef<HTMLIFrameElement>();
 
   const handleBuy = async () => {
     const web3 = new Web3((window as any).ethereum);
@@ -129,18 +133,23 @@ function IndexPage() {
   const handleKey = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
       setSelectedStar(null);
-      setShowPopover(false);
     }
   };
 
-  const handleStar = (element: HTMLElement, starId: number) => {
-    console.log(element);
-    console.log(features.find((f) => f.id === starId));
+  const handleSearchResult = (id: number) => {
+    setSelectedStar(features.find((f) => f.id === id));
+    setSearchResults([]);
+    setSearchTerms('');
+  };
 
-    setSelectedStar(features.find((f) => f.id === starId));
+  const handleStar = (event: CustomEvent) => {
+    console.log("handleStar");
+    console.log(event.detail.id);
+    console.log(features);
 
-    setPopoverTarget(element);
-    setShowPopover(true);
+    console.log(features.find((f) => f.id === event.detail.id));
+
+    setSelectedStar(features.find((f) => f.id === event.detail.id));
   };
 
   const load = async () => {
@@ -182,9 +191,9 @@ function IndexPage() {
           ...f.properties,
           hex:
             typeof f.properties.bv === "string"
-              // TODO: replace with new bv2rgb function
-              // ? bvcolor(f.properties.bv)
-              ? '#FFFFFF'
+              ? // TODO: replace with new bv2rgb function
+                // ? bvcolor(f.properties.bv)
+                "#FFFFFF"
               : "#FFFFFF",
           name: starNames[f.id]?.name,
         },
@@ -294,6 +303,34 @@ function IndexPage() {
   }, []);
 
   useEffect(() => {
+    window.addEventListener("selectStar", handleStar);
+
+    return () => {
+      window.removeEventListener("selectStar", handleStar);
+    };
+  }, [features]);
+
+  useEffect(() => {
+    if (!searchTerms) {
+      setSearchResults([]);
+      return;
+    }
+
+    setSearchResults(
+      features
+        .filter((feature) =>
+          feature.properties.name
+            ?.toLowerCase()
+            .includes(searchTerms.toLowerCase())
+        )
+        .map((result) => ({
+          id: result.id,
+          name: result.properties.name,
+        }))
+    );
+  }, [searchTerms]);
+
+  useEffect(() => {
     if (starRef.current) {
       window.scrollTo(
         (document.body.scrollWidth - window.innerWidth) / 2,
@@ -304,65 +341,33 @@ function IndexPage() {
 
   return (
     <>
-      <svg
+      <iframe
         className={styles.sky}
+        frameBorder={0}
         ref={starRef}
-        xmlns="http://www.w3.org/2000/svg"
-        xmlnsXlink="http://www.w3.org/1999/xlink"
-        viewBox="0 0 359.8019 178.2206"
-        style={{
-          height: `${178.2206 * zoom * 10}px`,
-          width: `${359.8019 * zoom * 10}px`,
-        }}
-      >
-        <g>
-          {constellationLines.map((line, lineIndex) =>
-            line.geometry.paths.map((path, pathIndex) => (
-              <path
-                className={styles.constellation}
-                fill="transparent"
-                key={`${lineIndex}-${pathIndex}`}
-                stroke="#999999"
-                strokeDasharray={0.2}
-                strokeWidth={0.05}
-                d={`M${path}`}
-              />
-            ))
-          )}
-        </g>
-        <g>
-          {features.map((feature) => (
-            <circle
-              className={[styles.star]
-                .concat(
-                  selectedStar?.id === feature.id ? styles.selected : null
-                )
-                .join(" ")}
-              fill="#FFFFFF"
-              key={feature.id}
-              onClick={(e) => handleStar((e as any).target, feature.id)}
-              cx={feature.geometry.coordinates[0]}
-              cy={feature.geometry.coordinates[1]}
-              r={0.5}
-              stroke="#1e1e1e"
-              strokeWidth={.75}
-            />
-          ))}
-        </g>
-        <g className={styles.constellations}>
-          {constellations.map((constellation) => (
-            <text
-              fontSize={1}
-              fill="#666666"
-              key={constellation.properties.name}
-              x={constellation.geometry.coordinates[0]}
-              y={constellation.geometry.coordinates[1]}
-            >
-              {constellation.properties.name}
-            </text>
-          ))}
-        </g>
-      </svg>
+        src="https://connect-app.starledger-map.pages.dev"
+      ></iframe>
+      <div className={styles.search}>
+        <input
+          onBlur={() => setHideSearchResults(true)}
+          onChange={(e) => setSearchTerms(e.target.value)}
+          onFocus={(e) => setHideSearchResults(false)}
+          placeholder="Search for stars..."
+          type="text"
+          value={searchTerms}
+        />
+        {searchResults && !hideSearchResults && (
+          <ul className={styles.results}>
+            {searchResults.map((result) => (
+              <li key={result.id}>
+                <button onMouseDown={() => handleSearchResult(result.id)}>
+                  {result.name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
       <div className={styles.zoom}>
         <button disabled={zoom === 2.5} onClick={() => setZoom(zoom + 0.25)}>
           +
@@ -371,45 +376,45 @@ function IndexPage() {
           -
         </button>
       </div>
-      <Popover
-        onClose={() => {
-          setSelectedStar(null);
-          setShowPopover(false);
-        }}
-        show={showPopover}
-        target={popoverTarget}
-        title={`Star #${selectedStar?.id}`}
-      >
-        <div className={styles.starInfo}>
-          <div className={styles.starInfoField}>
-            <b className={styles.starInfoKey}>Owner</b>
-            <span className={styles.starInfoValue}>
-              {selectedStar?.properties.owner || "Nobody"}
-            </span>
-          </div>
-          <div className={styles.starInfoField}>
-            <b className={styles.starInfoKey}>Name</b>
-            <span className={styles.starInfoValue}>
-              {selectedStar?.properties.name || "Untitled"}
-            </span>
-          </div>
-          <div className={styles.starInfoField}>
-            <b className={styles.starInfoKey}>BV</b>
-            <span className={styles.starInfoValue}>
-              {selectedStar?.properties.bv}
-            </span>
-          </div>
-          <div className={styles.starInfoField}>
-            <b className={styles.starInfoKey}>Mag</b>
-            <span className={styles.starInfoValue}>
-              {selectedStar?.properties.mag}
-            </span>
+      {!selectedStar && (
+        <div className={styles.details}><h4>Click a star to begin</h4></div>
+      )}
+      {selectedStar && (
+        <div className={styles.details}>
+          <div className={styles.detailsContent}>
+            <h3>Star #{selectedStar?.id}</h3>
+            <div className={styles.starInfo}>
+              <div className={styles.starInfoField}>
+                <span className={styles.starInfoKey}>Owner</span>
+                <span className={styles.starInfoValue}>
+                  {selectedStar?.properties.owner || "Nobody"}
+                </span>
+              </div>
+              <div className={styles.starInfoField}>
+                <span className={styles.starInfoKey}>Name</span>
+                <span className={styles.starInfoValue}>
+                  {selectedStar?.properties.name || "Untitled"}
+                </span>
+              </div>
+              <div className={styles.starInfoField}>
+                <span className={styles.starInfoKey}>BV</span>
+                <span className={styles.starInfoValue}>
+                  {selectedStar?.properties.bv}
+                </span>
+              </div>
+              <div className={styles.starInfoField}>
+                <span className={styles.starInfoKey}>Mag</span>
+                <span className={styles.starInfoValue}>
+                  {selectedStar?.properties.mag}
+                </span>
+              </div>
+            </div>
+            <div className={styles.starInfoBuy}>
+              <Button onClick={() => handleBuy()}>Buy for Ξ 0.001</Button>
+            </div>
           </div>
         </div>
-        <div className={styles.starInfoBuy}>
-          <Button onClick={() => handleBuy()}>Buy for Ξ 0.001</Button>
-        </div>
-      </Popover>
+      )}
       <footer className={styles.footer}>
         <a
           href="https://austincodeshop.com"

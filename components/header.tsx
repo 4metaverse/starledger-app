@@ -1,4 +1,4 @@
-import { Oauth2Client } from '@metis.io/middleware-client';
+import { Oauth2Client } from "@metis.io/middleware-client";
 import { useState } from "react";
 
 import Button from "./button";
@@ -32,10 +32,10 @@ const Header = () => {
     console.log(process.env.POLIS_REDIRECT_URL);
 
     const oauth2Client = new Oauth2Client();
-		oauth2Client.startOauth2(
-			process.env.POLIS_APP_ID,
-			process.env.POLIS_REDIRECT_URL
-		);
+    oauth2Client.startOauth2(
+      process.env.POLIS_APP_ID,
+      process.env.POLIS_REDIRECT_URL
+    );
   };
 
   return (
@@ -58,14 +58,21 @@ const Header = () => {
               </li>
             </ul>
           </nav> */}
-          <div className={styles.network}>Metis Stardust Testnet</div>
-          {account ? (
-            <Button onClick={() => setAccount("")}>Close Wallet</Button>
-          ) : (
-            <Button onClick={() => handleConnect()}>
-              Connect Wallet
-            </Button>
-          )}
+          <div className={styles.user}>
+            <div className={styles.network}>Metis Stardust Testnet</div>
+            {account ? (
+              <button className={styles.connect} onClick={() => setAccount("")}>
+                Close Wallet
+              </button>
+            ) : (
+              <button
+                className={styles.connect}
+                onClick={() => handleConnect()}
+              >
+                Connect Wallet
+              </button>
+            )}
+          </div>
         </section>
       </header>
       <Modal
@@ -74,7 +81,8 @@ const Header = () => {
         title="Connect Wallet"
       >
         <p>
-          To use StarLedger, connect your Ethereum wallet using a provider below.
+          To use StarLedger, connect your Ethereum wallet using a provider
+          below.
         </p>
         <div>
           <Button icon="polis-logo.png" onClick={() => handlePolis()}>

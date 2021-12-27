@@ -1,3 +1,18 @@
+.connect {
+  background: none;
+  background-image: url(/images/user-icon.svg);
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-size: 36px auto;
+  border: none;
+  color: transparent;
+  height: 36px;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  width: 36px;
+}
+
 .header {
   align-items: center;
   color: white;
@@ -16,12 +31,15 @@
   background-position: center left;
   background-repeat: no-repeat;
   background-size: auto 36px;
-  flex-grow: 1;
   font-size: 22px;
   font-weight: normal;
   height: 36px;
+  left: 20px;
+  margin: 0;
   padding-left: 37px;
+  position: fixed;
   text-transform: uppercase;
+  top: 20px;
 }
 
 .logo span {
@@ -41,6 +59,14 @@
   margin-right: 20px;
 }
 
+.user {
+  align-items: center;
+  display: flex;
+  position: fixed;
+  right: 20px;
+  top: 20px;
+}
+
 .wrapper {
   align-items: center;
   display: flex;
@@ -49,7 +75,30 @@
 }
 
 @media screen and (max-width: 800px) {
+  .connect {
+    background-size: auto 48px;
+    height: 48px;
+    width: 48px;
+  }
+
+  .logo {
+    background-image: url(/images/starledger-icon.svg);
+    background-size: auto 48px;
+    color: transparent;
+    height: 48px;
+    left: 10px;
+    overflow: hidden;
+    padding: 0;
+    top: 10px;
+    width: 48px;
+  }
+
   .network {
     display: none;
+  }
+
+  .user {
+    right: 10px;
+    top: 10px;
   }
 }
