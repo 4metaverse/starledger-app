@@ -433,7 +433,7 @@ const IndexPage: NextPage<{
               <div className={styles.starInfoField}>
                 <span className={styles.starInfoKey}>Owner</span>
                 <span className={styles.starInfoValue}>
-                  {selectedStar?.properties.owner || "Nobody"}
+                  {selectedStar?.properties.owner || "0x3FC7FC"}
                 </span>
               </div>
               <div className={styles.starInfoField}>
@@ -450,8 +450,8 @@ const IndexPage: NextPage<{
               </div>
             </div>
             <div className={styles.starInfoBuy}>
-              <Button color="primary" onClick={() => handleBuy()}>
-                Buy for Ξ 0.001
+              <Button color="primary" disabled onClick={() => handleBuy()}>
+                Not for Sale
               </Button>
             </div>
           </div>

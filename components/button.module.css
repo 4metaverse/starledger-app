@@ -10,6 +10,11 @@
   text-transform: uppercase;
 }
 
+.button:disabled {
+  background-color: #333;
+  color: #CCC;
+}
+
 .button.icon {
   background-repeat: no-repeat;
   background-size: 36px auto;
