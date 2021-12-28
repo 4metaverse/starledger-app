@@ -224,7 +224,12 @@ const IndexPage: NextPage<{
     setSearchResults([]);
     setSearchTerms("");
 
-    starRef.current.contentWindow.window.postMessage({ id });
+    starRef.current.contentWindow.window.postMessage({
+      type: 'selectStar',
+      data: {
+        id
+      }
+    });
   };
 
   const load = async () => {
@@ -382,7 +387,7 @@ const IndexPage: NextPage<{
         className={styles.sky}
         frameBorder={0}
         ref={starRef}
-        src="https://map.starledger.org"
+        src="https://connect-app.starledger-map.pages.dev"
         // src="http://localhost:3002"
       ></iframe>
       <div className={styles.search}>
