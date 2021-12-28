@@ -224,7 +224,7 @@ const IndexPage: NextPage<{
     setSearchResults([]);
     setSearchTerms("");
 
-    starRef.current.contentWindow.window.postMessage({
+    starRef.current.contentWindow.postMessage({
       type: 'selectStar',
       data: {
         id
