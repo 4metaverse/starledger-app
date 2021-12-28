@@ -163,10 +163,6 @@ const IndexPage: NextPage<{
       method: "eth_requestAccounts",
     });
 
-    const web3 = new Web3((window as any).ethereum);
-    const balance = await web3.eth.getBalance(accounts[0]);
-    console.log(web3.utils.fromWei(balance, "ether"));
-
     setAccount(accounts[0]);
     setChainId((window as any).ethereum.chainId);
     setWallet("metamask");
@@ -216,10 +212,6 @@ const IndexPage: NextPage<{
   };
 
   const handlePolis = () => {
-    console.log(process.env);
-    console.log(process.env.POLIS_APP_ID);
-    console.log(process.env.POLIS_REDIRECT_URL);
-
     const oauth2Client = new Oauth2Client();
     oauth2Client.startOauth2(
       process.env.POLIS_APP_ID,
@@ -325,7 +317,6 @@ const IndexPage: NextPage<{
   }, []);
 
   useEffect(() => {
-    console.log("chainId", chainId);
     if (chainId !== "" && chainId !== "0x24c") {
       setModalType("invalidNetwork");
     } else {
@@ -431,18 +422,18 @@ const IndexPage: NextPage<{
       {selectedStar && (
         <div className={styles.details}>
           <div className={styles.detailsContent}>
-            <h3>Star #{selectedStar?.id}</h3>
+            <h3>
+              {selectedStar?.properties.name || `HIP ${selectedStar?.id}`}
+            </h3>
             <div className={styles.starInfo}>
+              <div className={styles.starInfoField}>
+                <span className={styles.starInfoKey}>Number</span>
+                <span className={styles.starInfoValue}>{selectedStar?.id}</span>
+              </div>
               <div className={styles.starInfoField}>
                 <span className={styles.starInfoKey}>Owner</span>
                 <span className={styles.starInfoValue}>
                   {selectedStar?.properties.owner || "Nobody"}
-                </span>
-              </div>
-              <div className={styles.starInfoField}>
-                <span className={styles.starInfoKey}>Name</span>
-                <span className={styles.starInfoValue}>
-                  {selectedStar?.properties.name || "Untitled"}
                 </span>
               </div>
               <div className={styles.starInfoField}>
@@ -517,7 +508,9 @@ const IndexPage: NextPage<{
                 >
                   MetaMask
                 </Button>
-                <div className={styles.modalButtonError}>(Not Installed)</div>
+                {!(window as any).ethereum?.isMetaMask && (
+                  <div className={styles.modalButtonError}>(Not Installed)</div>
+                )}
               </div>
             </div>
           </div>
