@@ -382,7 +382,7 @@ const IndexPage: NextPage<{
         className={styles.sky}
         frameBorder={0}
         ref={starRef}
-        src="https://connect-app.starledger-map.pages.dev"
+        src="https://map.starledger.org"
         // src="http://localhost:3002"
       ></iframe>
       <div className={styles.search}>
