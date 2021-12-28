@@ -229,7 +229,7 @@ const IndexPage: NextPage<{
       data: {
         id
       }
-    });
+    }, "*");
   };
 
   const load = async () => {
