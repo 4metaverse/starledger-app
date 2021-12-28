@@ -16,7 +16,7 @@
   border-radius: 20px;
   padding: 20px;
   position: relative;
-  width: 300px;
+  width: 400px;
   z-index: 9999;
 }
 
@@ -34,5 +34,5 @@
 }
 
 .title {
-  margin: 0;
+  margin: 0 0 15px 0;
 }

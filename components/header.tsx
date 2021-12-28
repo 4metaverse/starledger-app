@@ -1,43 +1,13 @@
-import { Oauth2Client } from "@metis.io/middleware-client";
-import { useState } from "react";
-
-import Button from "./button";
-import Modal from "./modal";
+import { NextPage } from "next";
 
 import styles from "./header.module.css";
 
-const Header = () => {
-  const [account, setAccount] = useState("");
-  const [showModal, setShowModal] = useState(false);
-
-  const handleConnect = () => {
-    setShowModal(true);
-  };
-
-  const handleMetaMask = async () => {
-    if (!(await (window as any).ethereum)) {
-      setShowModal(true);
-      return;
-    }
-
-    const accounts = await (window as any).ethereum.request({
-      method: "eth_requestAccounts",
-    });
-    setAccount(accounts[0]);
-  };
-
-  const handlePolis = () => {
-    console.log(process.env);
-    console.log(process.env.POLIS_APP_ID);
-    console.log(process.env.POLIS_REDIRECT_URL);
-
-    const oauth2Client = new Oauth2Client();
-    oauth2Client.startOauth2(
-      process.env.POLIS_APP_ID,
-      process.env.POLIS_REDIRECT_URL
-    );
-  };
-
+const Header: NextPage<{
+  account: string;
+  onConnect: () => void;
+  onDisconnect: () => void;
+  wallet: "metamask" | "polis" | "none";
+}> = ({ account, onConnect, onDisconnect, wallet }) => {
   return (
     <>
       <header className={styles.header}>
@@ -59,40 +29,32 @@ const Header = () => {
             </ul>
           </nav> */}
           <div className={styles.user}>
-            <div className={styles.network}>Metis Stardust Testnet</div>
+            <div className={styles.network}>
+              {account ? account.substring(0, 12) : "Guest"}
+            </div>
             {account ? (
-              <button className={styles.connect} onClick={() => setAccount("")}>
+              <button
+                className={[
+                  styles.connect,
+                  wallet === "metamask"
+                    ? styles.metamask
+                    : wallet === "polis"
+                    ? styles.polis
+                    : styles.none,
+                ].join(" ")}
+                onClick={onDisconnect}
+                title={wallet}
+              >
                 Close Wallet
               </button>
             ) : (
-              <button
-                className={styles.connect}
-                onClick={() => handleConnect()}
-              >
+              <button className={styles.connect} onClick={onConnect}>
                 Connect Wallet
               </button>
             )}
           </div>
         </section>
       </header>
-      <Modal
-        onClose={() => setShowModal(false)}
-        show={showModal}
-        title="Connect Wallet"
-      >
-        <p>
-          To use StarLedger, connect your Ethereum wallet using a provider
-          below.
-        </p>
-        <div>
-          <Button icon="polis-logo.png" onClick={() => handlePolis()}>
-            Polis
-          </Button>
-          <Button icon="metamask-logo.svg" onClick={() => handleMetaMask()}>
-            MetaMask
-          </Button>
-        </div>
-      </Modal>
     </>
   );
 };

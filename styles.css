@@ -1,7 +1,7 @@
 @font-face {
   font-family: Futura;
-  src: url("/fonts/FuturaLight.woff2") format("woff2"),
-    url("/fonts/FuturaLight.woff") format("woff");
+  src: url("/fonts/FuturaMedium.woff2") format("woff2"),
+    url("/fonts/FuturaMedium.woff") format("woff");
 }
 
 @font-face {
@@ -46,4 +46,8 @@ button:disabled {
   background-color: black;
   color: white;
   cursor: not-allowed;
+}
+
+button:disabled:hover {
+  transform: none !important;
 }

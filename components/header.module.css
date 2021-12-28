@@ -13,6 +13,14 @@
   width: 36px;
 }
 
+.connect.metamask {
+  background-image: url(/images/metamask-logo.svg);
+}
+
+.connect.polis {
+  background-image: url(/images/polis-logo.png);
+}
+
 .header {
   align-items: center;
   color: white;

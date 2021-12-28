@@ -1,39 +1,37 @@
-import { useEffect, useRef, useState } from "react";
+import { HttpClient, Oauth2Client } from "@metis.io/middleware-client";
+import { NextPage } from "next";
+import { ReactElement, useEffect, useRef, useState } from "react";
 import Web3 from "web3";
 import { AbiItem } from "web3-utils";
 
 import Button from "../components/button";
+import CloseIcon from "../components/closeIcon";
+import Header from "../components/header";
+import LinkIcon from "../components/linkIcon";
+import Modal from "../components/modal";
+import getChainName from "../utils/getChainName";
 
 import styles from "./index.module.css";
 
-function IndexPage() {
-  const [constellationLines, setConstellationLines] = useState<
-    {
-      geometry: {
-        coordinates: number[][][];
-        paths: string[];
-        type: "MultiLineString";
-      };
-      id: number;
-      properties: {
-        name: string;
-      };
-      type: "Feature";
-    }[]
-  >([]);
-  const [constellations, setConstellations] = useState<
-    {
-      geometry: {
-        coordinates: number[];
-        type: "Point";
-      };
-      id: number;
-      properties: {
-        name: string;
-      };
-      type: "Feature";
-    }[]
-  >([]);
+const IndexPage: NextPage<{
+  polisClient: HttpClient;
+  polisUser: {
+    balance: string;
+    display_name: string;
+    email: string;
+    eth_address: string;
+    last_login_time: number;
+    username: string;
+  };
+}> = ({ polisClient, polisUser }) => {
+  const [account, setAccount] = useState("");
+  const [chainId, setChainId] = useState("");
+  const [chainName, setChainName] = useState("");
+  const [wallet, setWallet] = useState<"metamask" | "polis" | "none">("none");
+
+  const [errorMessage, setErrorMessage] = useState<string | ReactElement>("");
+  const [errorTimer, setErrorTimer] = useState<NodeJS.Timer>();
+
   const [features, setFeatures] = useState<
     {
       geometry: {
@@ -76,9 +74,18 @@ function IndexPage() {
   }>();
   const [zoom, setZoom] = useState(1);
 
+  const [modalType, setModalType] = useState<"" | "connect" | "invalidNetwork">(
+    ""
+  );
+
   const starRef = useRef<HTMLIFrameElement>();
 
   const handleBuy = async () => {
+    if (wallet === "polis") {
+      await polisClient.sendTxAsync("starledger", 588, "buy", []);
+      return;
+    }
+
     const web3 = new Web3((window as any).ethereum);
     await (window as any).ethereum.enable();
 
@@ -130,6 +137,10 @@ function IndexPage() {
     await NameContract.methods.setGreeting("oy").send({ from: accounts[0] });
   };
 
+  const handleChainChanged = (chainId: string) => {
+    setChainId(chainId);
+  };
+
   const handleKey = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
       setSelectedStar(null);
@@ -137,17 +148,89 @@ function IndexPage() {
   };
 
   const handleMessage = ({ data }) => {
-    console.log(data);
-
-    if (data.type === 'selectStar') {
+    if (data.type === "selectStar") {
       setSelectedStar(features.find((f) => f.id === data.data.id));
     }
+  };
+
+  const handleMetaMask = async () => {
+    if (!(await (window as any).ethereum)) {
+      setModalType("connect");
+      return;
+    }
+
+    const accounts = await (window as any).ethereum.request({
+      method: "eth_requestAccounts",
+    });
+
+    const web3 = new Web3((window as any).ethereum);
+    const balance = await web3.eth.getBalance(accounts[0]);
+    console.log(web3.utils.fromWei(balance, "ether"));
+
+    setAccount(accounts[0]);
+    setChainId((window as any).ethereum.chainId);
+    setWallet("metamask");
+
+    if ((window as any).ethereum.chainId !== "0x24c") {
+      setModalType("invalidNetwork");
+    } else {
+      setModalType("");
+    }
+  };
+
+  const handleNetwork = async () => {
+    try {
+      await (window as any).ethereum.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0x24c" }],
+      });
+    } catch (error) {
+      if (errorTimer) {
+        clearTimeout(errorTimer);
+      }
+
+      setErrorMessage(
+        error.code === 4902 ? (
+          <>
+            To continue, you must use the <b>Metis Stardust Testnet</b> network.{" "}
+            <a
+              href="https://chainlist.org/?search=metis"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Launch Chainlist
+            </a>{" "}
+            to quickly add this network to MetaMask. Then try again.
+          </>
+        ) : (
+          "Unknown error. Please try again."
+        )
+      );
+
+      const newErrorTimer = setTimeout(() => {
+        setErrorMessage("");
+      }, 10000);
+
+      setErrorTimer(newErrorTimer);
+    }
+  };
+
+  const handlePolis = () => {
+    console.log(process.env);
+    console.log(process.env.POLIS_APP_ID);
+    console.log(process.env.POLIS_REDIRECT_URL);
+
+    const oauth2Client = new Oauth2Client();
+    oauth2Client.startOauth2(
+      process.env.POLIS_APP_ID,
+      process.env.POLIS_REDIRECT_URL
+    );
   };
 
   const handleSearchResult = (id: number) => {
     setSelectedStar(features.find((f) => f.id === id));
     setSearchResults([]);
-    setSearchTerms('');
+    setSearchTerms("");
 
     starRef.current.contentWindow.window.postMessage({ id });
   };
@@ -156,151 +239,100 @@ function IndexPage() {
     const data = await fetch("/data/stars.6.json");
     const { features: newFeatures } = await data.json();
 
-    let minX = 0;
-    let minY = 0;
-    let maxX = 0;
-    let maxY = 0;
-
-    newFeatures.forEach((f) => {
-      if (f.geometry.coordinates[0] < minX) {
-        minX = f.geometry.coordinates[0];
-      }
-      if (f.geometry.coordinates[1] < minY) {
-        minY = f.geometry.coordinates[1];
-      }
-      if (f.geometry.coordinates[0] > maxX) {
-        maxX = f.geometry.coordinates[0];
-      }
-      if (f.geometry.coordinates[1] > maxY) {
-        maxY = f.geometry.coordinates[1];
-      }
-    });
-
-    console.log(minX, minY, maxX, maxY);
-
     const starNameData = await fetch("/data/starnames.json");
     // const { features: newStarNames } = await starNameData.json();
     const starNames = await starNameData.json();
-
-    console.log(newFeatures.length);
 
     setFeatures(
       newFeatures.map((f) => ({
         ...f,
         properties: {
           ...f.properties,
-          hex:
-            typeof f.properties.bv === "string"
-              ? // TODO: replace with new bv2rgb function
-                // ? bvcolor(f.properties.bv)
-                "#FFFFFF"
-              : "#FFFFFF",
           name: starNames[f.id]?.name,
         },
-        geometry: {
-          ...f.geometry,
-          coordinates: [
-            -f.geometry.coordinates[0] + -minX,
-            -f.geometry.coordinates[1] + -minY,
-          ],
-        },
       }))
     );
 
-    const constellationData = await fetch("/data/constellations.json");
-    const { features: newConstellations } = await constellationData.json();
+    // const web3 = new Web3((window as any).ethereum);
+    // if (await (window as any).ethereum) {
+    //   await (window as any).ethereum.enable();
 
-    setConstellations(
-      newConstellations.map((f) => ({
-        ...f,
-        geometry: {
-          ...f.geometry,
-          coordinates: [
-            -f.geometry.coordinates[0] + -minX,
-            -f.geometry.coordinates[1] + -minY,
-          ],
-        },
-      }))
-    );
+    //   const NameContract = new web3.eth.Contract(
+    //     [
+    //       {
+    //         inputs: [
+    //           {
+    //             internalType: "string",
+    //             name: "_greeting",
+    //             type: "string",
+    //           },
+    //         ],
+    //         stateMutability: "nonpayable",
+    //         type: "constructor",
+    //       },
+    //       {
+    //         inputs: [],
+    //         name: "greet",
+    //         outputs: [
+    //           {
+    //             internalType: "string",
+    //             name: "",
+    //             type: "string",
+    //           },
+    //         ],
+    //         stateMutability: "view",
+    //         type: "function",
+    //       },
+    //       {
+    //         inputs: [
+    //           {
+    //             internalType: "string",
+    //             name: "_greeting",
+    //             type: "string",
+    //           },
+    //         ],
+    //         name: "setGreeting",
+    //         outputs: [],
+    //         stateMutability: "nonpayable",
+    //         type: "function",
+    //       },
+    //     ] as AbiItem[],
+    //     "0x8BF576e789c14a6578DE1cAe7E3Cea6fa57b0d83"
+    //   );
 
-    const constellationLineData = await fetch(
-      "/data/constellations.lines.json"
-    );
-    const { features: newConstellationLines } =
-      await constellationLineData.json();
-
-    setConstellationLines(
-      newConstellationLines.map((f) => ({
-        ...f,
-        geometry: {
-          ...f.geometry,
-          paths: f.geometry.coordinates.map((c) =>
-            c.map((d) => [-d[0] + -minX, -d[1] + -minY]).join(" ")
-          ),
-        },
-      }))
-    );
-
-    const web3 = new Web3((window as any).ethereum);
-    if (await (window as any).ethereum) {
-      await (window as any).ethereum.enable();
-
-      const NameContract = new web3.eth.Contract(
-        [
-          {
-            inputs: [
-              {
-                internalType: "string",
-                name: "_greeting",
-                type: "string",
-              },
-            ],
-            stateMutability: "nonpayable",
-            type: "constructor",
-          },
-          {
-            inputs: [],
-            name: "greet",
-            outputs: [
-              {
-                internalType: "string",
-                name: "",
-                type: "string",
-              },
-            ],
-            stateMutability: "view",
-            type: "function",
-          },
-          {
-            inputs: [
-              {
-                internalType: "string",
-                name: "_greeting",
-                type: "string",
-              },
-            ],
-            name: "setGreeting",
-            outputs: [],
-            stateMutability: "nonpayable",
-            type: "function",
-          },
-        ] as AbiItem[],
-        "0x8BF576e789c14a6578DE1cAe7E3Cea6fa57b0d83"
-      );
-
-      console.log(await NameContract.methods.greet().call());
-    }
+    //   console.log(await NameContract.methods.greet().call());
+    // }
   };
 
   useEffect(() => {
     load();
 
     window.addEventListener("keydown", handleKey);
+    if ((window as any).ethereum) {
+      (window as any).ethereum.on("chainChanged", handleChainChanged);
+    }
 
     return () => {
       window.removeEventListener("keydown", handleKey);
+
+      if ((window as any).ethereum) {
+        (window as any).ethereum.removeListener(
+          "chainChanged",
+          handleChainChanged
+        );
+      }
     };
   }, []);
+
+  useEffect(() => {
+    console.log("chainId", chainId);
+    if (chainId !== "" && chainId !== "0x24c") {
+      setModalType("invalidNetwork");
+    } else {
+      setModalType("");
+    }
+    setChainName(getChainName(chainId));
+  }, [chainId]);
 
   useEffect(() => {
     window.addEventListener("message", handleMessage);
@@ -309,6 +341,11 @@ function IndexPage() {
       window.removeEventListener("message", handleMessage);
     };
   }, [features]);
+
+  useEffect(() => {
+    setAccount(polisUser?.eth_address);
+    setWallet("polis");
+  }, [polisUser]);
 
   useEffect(() => {
     if (!searchTerms) {
@@ -341,6 +378,15 @@ function IndexPage() {
 
   return (
     <>
+      <Header
+        account={account}
+        onConnect={() => setModalType("connect")}
+        onDisconnect={() => {
+          sessionStorage.clear();
+          window.location.reload();
+        }}
+        wallet={wallet}
+      />
       <iframe
         className={styles.sky}
         frameBorder={0}
@@ -378,7 +424,9 @@ function IndexPage() {
         </button>
       </div>
       {!selectedStar && (
-        <div className={styles.details}><h4>Click a star to begin</h4></div>
+        <div className={styles.details}>
+          <h4>Click a star to begin</h4>
+        </div>
       )}
       {selectedStar && (
         <div className={styles.details}>
@@ -411,7 +459,9 @@ function IndexPage() {
               </div>
             </div>
             <div className={styles.starInfoBuy}>
-              <Button onClick={() => handleBuy()}>Buy for Ξ 0.001</Button>
+              <Button color="primary" onClick={() => handleBuy()}>
+                Buy for Ξ 0.001
+              </Button>
             </div>
           </div>
         </div>
@@ -425,8 +475,95 @@ function IndexPage() {
           &copy; 2021 Austin Code Shop LLC
         </a>
       </footer>
+      {errorMessage && (
+        <div className={styles.error}>
+          <div className={styles.errorMessage}>{errorMessage}</div>
+          <button
+            className={styles.errorClose}
+            onClick={() => setErrorMessage("")}
+          >
+            <CloseIcon size={24} />
+          </button>
+        </div>
+      )}
+      <Modal
+        canClose={modalType === "connect"}
+        onClose={() => setModalType("")}
+        show={modalType !== ""}
+        title={modalType === "connect" ? "Connect Wallet" : "Invalid Network"}
+      >
+        {modalType === "connect" && (
+          <div className={styles.connectModal}>
+            <p>
+              To use StarLedger, connect your Ethereum wallet using a provider
+              below.
+            </p>
+            <div className={styles.modalButtons}>
+              <div>
+                <Button
+                  color="transparent"
+                  icon="polis-logo.png"
+                  onClick={() => handlePolis()}
+                >
+                  Polis
+                </Button>
+              </div>
+              <div>
+                <Button
+                  color="transparent"
+                  disabled={!(window as any).ethereum?.isMetaMask}
+                  icon="metamask-logo.svg"
+                  onClick={() => handleMetaMask()}
+                >
+                  MetaMask
+                </Button>
+                <div className={styles.modalButtonError}>(Not Installed)</div>
+              </div>
+            </div>
+          </div>
+        )}
+        {modalType === "invalidNetwork" && (
+          <div className={styles.invalidNetworkModal}>
+            <p>
+              Use MetaMask to switch to the Metis Stardust Testnet network or
+              click the button below to disconnect.
+            </p>
+            <ul>
+              <li>
+                <b>
+                  Required: Metis Stardust Testnet{" "}
+                  <a
+                    href="https://chainlist.org/?search=metis"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <LinkIcon />
+                  </a>
+                </b>
+              </li>
+              <li>
+                <span>Current: {chainName}</span>
+              </li>
+            </ul>
+            <div>
+              <Button
+                color="secondary"
+                onClick={() => {
+                  sessionStorage.clear();
+                  window.location.reload();
+                }}
+              >
+                Disconnect
+              </Button>
+              <Button color="primary" onClick={() => handleNetwork()}>
+                Switch
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </>
   );
-}
+};
 
 export default IndexPage;

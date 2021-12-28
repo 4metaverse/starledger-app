@@ -2,8 +2,10 @@ import { NextPage } from "next";
 
 import styles from "./button.module.css";
 
-const Button: NextPage<{ icon?: string; onClick: () => void }> = ({
+const Button: NextPage<{ color: 'primary' | 'secondary' | 'transparent'; disabled?: boolean; icon?: string; onClick: () => void }> = ({
+  color,
   children,
+  disabled = false,
   icon,
   onClick,
 }) => {
@@ -13,7 +15,8 @@ const Button: NextPage<{ icon?: string; onClick: () => void }> = ({
 
   return (
     <button
-      className={[styles.button].concat(icon ? styles.icon : null).join(" ")}
+      className={[styles.button, styles[color]].concat(icon ? styles.icon : null).join(" ")}
+      disabled={disabled}
       onClick={handleClick}
       style={{ backgroundImage: icon ? `url(/images/${icon})` : null }}
     >

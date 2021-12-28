@@ -7,6 +7,15 @@
   }
 }
 
+@keyframes slideIn {
+  0% {
+    top: -100px;
+  }
+  100% {
+    top: 0;
+  }
+}
+
 .constellation:hover {
   stroke: #c1ab70;
 }
@@ -36,6 +45,53 @@
   margin: 0;
 }
 
+.error {
+  align-items: center;
+  animation: slideIn 0.5s;
+  background-color: #EF7A85;
+  color: white;
+  display: flex;
+  font-size: 18px;
+  left: 0;
+  padding: 10px 20px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 999999;
+}
+
+.error a {
+  border-bottom: 1px dotted #000;
+  color: white;
+  padding-bottom: 1px;
+  white-space: nowrap;
+}
+
+.error a:hover {
+  color: black;
+  text-decoration: none;
+}
+
+.errorClose {
+  align-items: center;
+  background: none;
+  border-radius: 50%;
+  border: none;
+  color: black;
+  display: flex;
+  font-size: 24px;
+  font-weight: bold;
+  height: 32px;
+  margin: 0;
+  padding: 0;
+  width: 32px;
+}
+
+.errorMessage {
+  flex-grow: 1;
+  padding: 0 20px 0 0;
+}
+
 .footer {
   bottom: 20px;
   color: white;
@@ -50,6 +106,17 @@
 .footer a:hover {
   text-decoration: none;
 }
+
+.modalButtonError {
+  color: red;
+  font-size: 12px;
+  text-align: center;
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: center;
+};
 
 .results {
   color: white;
@@ -174,4 +241,26 @@
   .search input {
     width: 200px;
   }
+}
+
+/* modals */
+
+.invalidNetworkModal div {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.invalidNetworkModal ul {
+  list-style: none;
+  margin: 0 0 20px 0;
+  padding: 0;
+}
+
+.invalidNetworkModal ul li {
+  margin: 0;
+  padding: 0;
+}
+
+.invalidNetworkModal ul li span {
+  color: red;
 }
