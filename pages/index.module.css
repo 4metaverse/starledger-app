@@ -30,8 +30,13 @@
   display: flex;
   left: 20px;
   min-width: 200px;
+  pointer-events: none;
   position: fixed;
   transition: background-color .2s;
+}
+
+.details button {
+  pointer-events: all;
 }
 
 .details h3 {
@@ -90,6 +95,15 @@
 .errorMessage {
   flex-grow: 1;
   padding: 0 20px 0 0;
+}
+
+.expandButton {
+  background: none;
+  color: #c1ab70 !important;
+  font-size: 12px !important;
+  margin: 0;
+  padding: 0;
+  text-transform: uppercase;
 }
 
 .footer {
@@ -225,6 +239,37 @@
   stroke-width: 0.5px;
 }
 
+.suggestions {
+  bottom: 20px;
+  color: white;
+  left: 20px;
+  position: fixed;
+  transition: background-color .2s;
+}
+
+.suggestions button {
+  background: none;
+  color: #666;
+  font-size: 18px;
+  margin: 0 20px 0 0;
+  padding: 5px 0;
+}
+
+.suggestions button:hover {
+  color: white;
+}
+
+.suggestions h3 {
+  font-size: 32px;
+  margin: 0 0 20px 0;
+}
+
+.suggestions h4 {
+  font-size: 18px;
+  font-weight: normal;
+  margin: 0 0 5px 0;
+}
+
 .toggle {
   background: none;
   background-color: #000;
@@ -234,6 +279,7 @@
   font-size: 14px;
   margin: 0;
   padding: 10px 20px;
+  width: 120px;
 }
 
 .toggle:first-of-type {
@@ -278,6 +324,10 @@
     display: none;
   }
 
+  .details {
+    bottom: 100px;
+  }
+
   .search {
     left: calc(50% - 120px);
     top: 13px;
@@ -286,6 +336,14 @@
 
   .search input {
     width: 200px;
+  }
+
+  .suggestions {
+    bottom: 60px;
+    left: 0;
+    padding: 0 0 0 20px;
+    text-align: center;
+    right: 0;
   }
 }
 

@@ -26,6 +26,7 @@ const IndexPage: NextPage<{
   };
 }> = ({ polisClient, polisUser }) => {
   const [isWelcoming, setIsWelcoming] = useState(true);
+  const [showTopStars, setShowTopStars] = useState(false);
 
   const [account, setAccount] = useState("");
   const [chainId, setChainId] = useState("");
@@ -460,6 +461,44 @@ const IndexPage: NextPage<{
           -
         </button>
       </div>
+      {!selectedStar && !isWelcoming && (
+        <div className={styles.suggestions}>
+          <button
+            className={styles.expandButton}
+            onClick={() => setShowTopStars(!showTopStars)}
+          >
+            Popular Stars
+          </button>
+          {showTopStars && (
+            <ul>
+              <li>
+                <button onClick={() => handleSearchResult(11767)}>Polaris</button>
+              </li>
+              <li>
+                <button onClick={() => handleSearchResult(32349)}>Sirius</button>
+              </li>
+              <li>
+                <button onClick={() => handleSearchResult(27989)}>Betelgeuse</button>
+              </li>
+              <li>
+                <button onClick={() => handleSearchResult(24436)}>Rigel</button>
+              </li>
+              <li>
+                <button onClick={() => handleSearchResult(91262)}>Vega</button>
+              </li>
+              <li>
+                <button onClick={() => handleSearchResult(80763)}>Antares</button>
+              </li>
+              <li>
+                <button onClick={() => handleSearchResult(30438)}>Canopus</button>
+              </li>
+              <li>
+                <button onClick={() => handleSearchResult(37279)}>Procyon</button>
+              </li>
+            </ul>
+          )}
+        </div>
+      )}
       {selectedStar && !isWelcoming && (
         <div className={styles.details}>
           <div className={styles.detailsContent}>
