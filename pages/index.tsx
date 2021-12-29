@@ -1,5 +1,6 @@
 import { HttpClient, Oauth2Client } from "@metis.io/middleware-client";
 import { NextPage } from "next";
+import { useRouter } from "next/router";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import Web3 from "web3";
 import { AbiItem } from "web3-utils";
@@ -25,6 +26,9 @@ const IndexPage: NextPage<{
     username: string;
   };
 }> = ({ polisClient, polisUser }) => {
+  const router = useRouter();
+  const { localMap } = router.query;
+
   const [isWelcoming, setIsWelcoming] = useState(true);
   const [showTopStars, setShowTopStars] = useState(false);
 
@@ -410,7 +414,11 @@ const IndexPage: NextPage<{
         className={styles.sky}
         frameBorder={0}
         ref={starRef}
-        src={process.env.STARLEDGER_MAP_URL}
+        src={
+          localMap !== undefined
+            ? "http://localhost:3000"
+            : process.env.STARLEDGER_MAP_URL
+        }
       ></iframe>
       <div className={styles.mapPerspective}>
         <button
@@ -472,13 +480,19 @@ const IndexPage: NextPage<{
           {showTopStars && (
             <ul>
               <li>
-                <button onClick={() => handleSearchResult(11767)}>Polaris</button>
+                <button onClick={() => handleSearchResult(11767)}>
+                  Polaris
+                </button>
               </li>
               <li>
-                <button onClick={() => handleSearchResult(32349)}>Sirius</button>
+                <button onClick={() => handleSearchResult(32349)}>
+                  Sirius
+                </button>
               </li>
               <li>
-                <button onClick={() => handleSearchResult(27989)}>Betelgeuse</button>
+                <button onClick={() => handleSearchResult(27989)}>
+                  Betelgeuse
+                </button>
               </li>
               <li>
                 <button onClick={() => handleSearchResult(24436)}>Rigel</button>
@@ -487,13 +501,19 @@ const IndexPage: NextPage<{
                 <button onClick={() => handleSearchResult(91262)}>Vega</button>
               </li>
               <li>
-                <button onClick={() => handleSearchResult(80763)}>Antares</button>
+                <button onClick={() => handleSearchResult(80763)}>
+                  Antares
+                </button>
               </li>
               <li>
-                <button onClick={() => handleSearchResult(30438)}>Canopus</button>
+                <button onClick={() => handleSearchResult(30438)}>
+                  Canopus
+                </button>
               </li>
               <li>
-                <button onClick={() => handleSearchResult(37279)}>Procyon</button>
+                <button onClick={() => handleSearchResult(37279)}>
+                  Procyon
+                </button>
               </li>
             </ul>
           )}
