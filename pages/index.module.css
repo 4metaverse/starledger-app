@@ -126,9 +126,10 @@
   bottom: 15px;
   display: flex;
   justify-content: center;
-  left: 0;
+  left: calc(50% - 120px);
   position: fixed;
   right: 0;
+  width: 240px;
 }
 
 .modalButtonError {
@@ -279,7 +280,7 @@
   font-size: 14px;
   margin: 0;
   padding: 10px 20px;
-  width: 120px;
+  width: 50%;
 }
 
 .toggle:first-of-type {
