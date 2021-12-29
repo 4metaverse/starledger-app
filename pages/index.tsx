@@ -29,6 +29,10 @@ const IndexPage: NextPage<{
   const [chainName, setChainName] = useState("");
   const [wallet, setWallet] = useState<"metamask" | "polis" | "none">("none");
 
+  const [mapPerspective, setMapPerspective] = useState<"earth" | "overview">(
+    "earth"
+  );
+
   const [errorMessage, setErrorMessage] = useState<string | ReactElement>("");
   const [errorTimer, setErrorTimer] = useState<NodeJS.Timer>();
 
@@ -224,12 +228,15 @@ const IndexPage: NextPage<{
     setSearchResults([]);
     setSearchTerms("");
 
-    starRef.current.contentWindow.postMessage({
-      type: 'selectStar',
-      data: {
-        id
-      }
-    }, "*");
+    starRef.current.contentWindow.postMessage(
+      {
+        type: "selectStar",
+        data: {
+          id,
+        },
+      },
+      "*"
+    );
   };
 
   const load = async () => {
@@ -339,6 +346,18 @@ const IndexPage: NextPage<{
   }, [features]);
 
   useEffect(() => {
+    starRef.current.contentWindow.postMessage(
+      {
+        type: "perspectiveChange",
+        data: {
+          perspective: mapPerspective,
+        },
+      },
+      "*"
+    );
+  }, [mapPerspective]);
+
+  useEffect(() => {
     setAccount(polisUser?.eth_address);
     setWallet("polis");
   }, [polisUser]);
@@ -389,6 +408,26 @@ const IndexPage: NextPage<{
         ref={starRef}
         src={process.env.STARLEDGER_MAP_URL}
       ></iframe>
+      <div className={styles.mapPerspective}>
+        <button
+          className={[
+            styles.toggle,
+            mapPerspective === "earth" ? styles.toggleSelected : null,
+          ].join(" ")}
+          onClick={() => setMapPerspective("earth")}
+        >
+          Earth View
+        </button>
+        <button
+          className={[
+            styles.toggle,
+            mapPerspective === "overview" ? styles.toggleSelected : null,
+          ].join(" ")}
+          onClick={() => setMapPerspective("overview")}
+        >
+          Overview
+        </button>
+      </div>
       <div className={styles.search}>
         <input
           onBlur={() => setHideSearchResults(true)}

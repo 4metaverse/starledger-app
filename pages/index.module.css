@@ -98,6 +98,7 @@
   font-size: 12px;
   position: fixed;
   right: 20px;
+  text-align: right;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
     1px 1px 0 #000;
   z-index: 999;
@@ -105,6 +106,15 @@
 
 .footer a:hover {
   text-decoration: none;
+}
+
+.mapView {
+  bottom: 15px;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  right: 0;
 }
 
 .modalButtonError {
@@ -213,6 +223,38 @@
   animation: fade 2s infinite linear;
   stroke: #c1ab70;
   stroke-width: 0.5px;
+}
+
+.toggle {
+  background: none;
+  background-color: #000;
+  border: 1px #333 solid;
+  color: #999;
+  border-radius: 20px;
+  font-size: 14px;
+  margin: 0;
+  padding: 10px 20px;
+}
+
+.toggle:first-of-type {
+  border-bottom-right-radius: 0;
+  border-top-right-radius: 0;
+  border-right: none;
+}
+
+.toggle:last-of-type {
+  border-bottom-left-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.toggle:hover {
+  color: white;
+  transform: none;
+}
+
+.toggleSelected {
+  background-color: #111;
+  color: white;
 }
 
 .zoom {
