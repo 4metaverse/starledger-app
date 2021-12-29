@@ -108,7 +108,7 @@
   text-decoration: none;
 }
 
-.mapView {
+.mapPerspective {
   bottom: 15px;
   display: flex;
   justify-content: center;

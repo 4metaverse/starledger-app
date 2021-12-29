@@ -9,6 +9,7 @@ import CloseIcon from "../components/closeIcon";
 import Header from "../components/header";
 import LinkIcon from "../components/linkIcon";
 import Modal from "../components/modal";
+import Welcome from "../components/welcome";
 import getChainName from "../utils/getChainName";
 
 import styles from "./index.module.css";
@@ -509,6 +510,7 @@ const IndexPage: NextPage<{
           &copy; 2021 Austin Code Shop LLC
         </a>
       </footer>
+      <Welcome />
       {errorMessage && (
         <div className={styles.error}>
           <div className={styles.errorMessage}>{errorMessage}</div>
