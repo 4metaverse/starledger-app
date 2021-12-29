@@ -274,6 +274,10 @@
 }
 
 @media screen and (max-width: 800px) {
+  .footer {
+    display: none;
+  }
+
   .search {
     left: calc(50% - 120px);
     top: 13px;

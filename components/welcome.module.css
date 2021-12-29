@@ -1,3 +1,91 @@
-.welcome {
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.dismiss {
+  background: none;
+  color: white;
+  margin: 0;
+  padding: 20px;
+  text-transform: uppercase;
+}
+
+.image {
+  height: 512px;
+  left: calc(50% - 256px);
+  pointer-events: none;
   position: fixed;
+  top: calc(50% - 256px);
+  width: 512px;
+}
+
+.welcome {
+  bottom: 20px;
+  color: rgb(22, 22, 22);
+  display: flex;
+  flex-direction: column;
+  left: 20px;
+  pointer-events: none;
+  position: fixed;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
+  width: 40%;
+}
+
+.welcome button {
+  pointer-events: initial;
+  opacity: 0;
+  margin-top: 10px;
+}
+
+.welcome h2 {
+  color: #c1ab70;
+  font-size: 28px;
+  font-weight: normal;
+  margin: 0 0 15px 0;
+  opacity: 0;
+  text-transform: uppercase;
+}
+
+.welcome p {
+  color: white;
+  font-size: 20px;
+  margin: 0 0 15px 0;
+  opacity: 0;
+}
+
+.welcome.isAnimating button {
+  animation: fadeIn 1s forwards;
+  animation-delay: 2s;
+}
+
+.welcome.isAnimating h2 {
+  animation: fadeIn 1s forwards;
+}
+
+.welcome.isAnimating p {
+  animation: fadeIn 1s forwards;
+  animation-delay: 1s;
+}
+
+@media screen and (max-width: 800px) {
+  .image {
+    left: calc(50% - 128px);
+    height: 256px;
+    top: 20%;
+    width: 256px;
+  }
+
+  .welcome {
+    bottom: 100px;
+    left: 0;
+    padding: 20px;
+    right: 0;
+    width: auto;
+  }
 }

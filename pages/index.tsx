@@ -25,6 +25,8 @@ const IndexPage: NextPage<{
     username: string;
   };
 }> = ({ polisClient, polisUser }) => {
+  const [isWelcoming, setIsWelcoming] = useState(true);
+
   const [account, setAccount] = useState("");
   const [chainId, setChainId] = useState("");
   const [chainName, setChainName] = useState("");
@@ -458,12 +460,7 @@ const IndexPage: NextPage<{
           -
         </button>
       </div>
-      {!selectedStar && (
-        <div className={styles.details}>
-          <h4>Click a star to begin</h4>
-        </div>
-      )}
-      {selectedStar && (
+      {selectedStar && !isWelcoming && (
         <div className={styles.details}>
           <div className={styles.detailsContent}>
             <h3>
@@ -510,7 +507,7 @@ const IndexPage: NextPage<{
           &copy; 2021 Austin Code Shop LLC
         </a>
       </footer>
-      <Welcome />
+      {isWelcoming && <Welcome onComplete={() => setIsWelcoming(false)} />}
       {errorMessage && (
         <div className={styles.error}>
           <div className={styles.errorMessage}>{errorMessage}</div>

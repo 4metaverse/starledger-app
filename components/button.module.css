@@ -32,6 +32,11 @@
   transform: none;
 }
 
+.button.secondary:disabled {
+  background-color: #333;
+  color: black;
+}
+
 .button.transparent {
   background-color: transparent;
   color: black;
