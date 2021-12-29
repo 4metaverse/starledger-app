@@ -50,6 +50,10 @@
   top: 20px;
 }
 
+.logo a:hover {
+  text-decoration: none;
+}
+
 .logo span {
   color: #c1ab70;
 }
@@ -92,13 +96,19 @@
   .logo {
     background-image: url(/images/starledger-icon.svg);
     background-size: auto 48px;
-    color: transparent;
     height: 48px;
     left: 10px;
     overflow: hidden;
     padding: 0;
     top: 10px;
     width: 48px;
+  }
+
+  .logo a {
+    color: transparent;
+    display: block;
+    height: 100%;
+    width: 100%;
   }
 
   .network {

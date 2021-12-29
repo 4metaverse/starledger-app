@@ -13,7 +13,7 @@ const Header: NextPage<{
       <header className={styles.header}>
         <section className={styles.wrapper}>
           <h1 className={styles.logo}>
-            Star<span>Ledger</span>
+            <a href="https://starledger.org">Star<span>Ledger</span></a>
           </h1>
           {/* <nav className={styles.nav}>
             <ul className={styles.menu}>
