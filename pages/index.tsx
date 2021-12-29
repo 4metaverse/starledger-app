@@ -34,7 +34,7 @@ const IndexPage: NextPage<{
   const [wallet, setWallet] = useState<"metamask" | "polis" | "none">("none");
 
   const [mapPerspective, setMapPerspective] = useState<"earth" | "overview">(
-    "earth"
+    "overview"
   );
 
   const [errorMessage, setErrorMessage] = useState<string | ReactElement>("");
@@ -416,20 +416,20 @@ const IndexPage: NextPage<{
         <button
           className={[
             styles.toggle,
-            mapPerspective === "earth" ? styles.toggleSelected : null,
-          ].join(" ")}
-          onClick={() => setMapPerspective("earth")}
-        >
-          Earth View
-        </button>
-        <button
-          className={[
-            styles.toggle,
             mapPerspective === "overview" ? styles.toggleSelected : null,
           ].join(" ")}
           onClick={() => setMapPerspective("overview")}
         >
           Overview
+        </button>
+        <button
+          className={[
+            styles.toggle,
+            mapPerspective === "earth" ? styles.toggleSelected : null,
+          ].join(" ")}
+          onClick={() => setMapPerspective("earth")}
+        >
+          Earth View
         </button>
       </div>
       <div className={styles.search}>
