@@ -240,6 +240,22 @@
   stroke-width: 0.5px;
 }
 
+.status {
+  bottom: 20px;
+  color: white;
+  font-size: 18px;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: fixed;
+  right: 0;
+  text-align: center;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+    1px 1px 0 #000;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+}
+
 .suggestions {
   bottom: 20px;
   color: white;
