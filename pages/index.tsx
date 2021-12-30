@@ -635,15 +635,11 @@ const IndexPage: NextPage<{
   const handleMessage = ({ data }) => {
     if (data.type === "selectStar") {
       const feature = features.find((f) => f.id === data.data.id);
-      if (feature) {
-        setSelectedStar(feature);
-      }
+      setSelectedStar(feature);
     }
     if (data.type === "starHover") {
       const feature = features.find((f) => f.id === data.data.id);
-      if (feature) {
-        setStatus(feature.properties?.name || `HIP ${feature.id}`);
-      }
+      setStatus(feature ? feature.properties?.name || `HIP ${feature.id}` : "");
     }
   };
 
