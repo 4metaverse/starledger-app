@@ -29,6 +29,8 @@ const IndexPage: NextPage<{
   const router = useRouter();
   const { localMap } = router.query;
 
+  const searchRef = useRef<HTMLInputElement>();
+
   const [isWelcoming, setIsWelcoming] = useState(true);
   const [showTopStars, setShowTopStars] = useState(false);
 
@@ -709,6 +711,17 @@ const IndexPage: NextPage<{
     );
   };
 
+  const handleSearchBlur = (e: MouseEvent) => {
+    if (
+      e.target === searchRef?.current ||
+      searchRef?.current.contains(e.target as HTMLElement)
+    ) {
+      setHideSearchResults(false);
+    } else {
+      setHideSearchResults(true);
+    }
+  };
+
   const handleSearchResult = (id: number) => {
     setSelectedStar(features.find((f) => f.id === id));
     setSearchResults([]);
@@ -851,6 +864,14 @@ const IndexPage: NextPage<{
   }, [polisUser]);
 
   useEffect(() => {
+    window.addEventListener("click", handleSearchBlur);
+
+    return () => {
+      window.removeEventListener("click", handleSearchBlur);
+    };
+  }, [searchRef]);
+
+  useEffect(() => {
     if (!searchTerms) {
       setSearchResults([]);
       return;
@@ -891,7 +912,10 @@ const IndexPage: NextPage<{
         wallet={wallet}
       />
       <iframe
-        className={styles.sky}
+        className={[
+          styles.sky,
+          !hideSearchResults ? styles.disabled : null,
+        ].join(" ")}
         frameBorder={0}
         ref={starRef}
         src={
@@ -921,11 +945,10 @@ const IndexPage: NextPage<{
           Earth View
         </button>
       </div> */}
-      <div className={styles.search}>
+      <div className={styles.search} ref={searchRef}>
         <input
-          onBlur={() => setHideSearchResults(true)}
           onChange={(e) => setSearchTerms(e.target.value)}
-          onFocus={(e) => setHideSearchResults(false)}
+          onFocus={() => setHideSearchResults(false)}
           placeholder="Search for stars..."
           type="text"
           value={searchTerms}
@@ -934,7 +957,7 @@ const IndexPage: NextPage<{
           <ul className={styles.results}>
             {searchResults.map((result) => (
               <li key={result.id}>
-                <button onMouseDown={() => handleSearchResult(result.id)}>
+                <button onClick={() => handleSearchResult(result.id)}>
                   {result.name}
                 </button>
               </li>
