@@ -934,7 +934,7 @@ const IndexPage: NextPage<{
           <ul className={styles.results}>
             {searchResults.map((result) => (
               <li key={result.id}>
-                <button onMouseDown={() => handleSearchResult(result.id)}>
+                <button onClick={() => handleSearchResult(result.id)}>
                   {result.name}
                 </button>
               </li>
