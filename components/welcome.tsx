@@ -18,7 +18,7 @@ const Welcome: NextPage<{ onComplete: () => void }> = ({ onComplete }) => {
       title: "Welcome, earthling.",
       text: (
         <>
-          <p>Explore over 5,000 stars in the StarLedger metaverse.</p>
+          <p>Explore 5,000 stars in the StarLedger metaverse.</p>
           <p>Each star represents a star in our own universe.</p>
         </>
       ),
