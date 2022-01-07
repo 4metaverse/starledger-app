@@ -42,8 +42,8 @@ const Welcome: NextPage<{ onComplete: () => void }> = ({ onComplete }) => {
       title: "Collect stars.",
       text: (
         <>
-          Buy a Star NFT on the Metis Stardust Testnet network to own and trade
-          it in the StarLedger metaverse.
+          <p>Minting begins Feb 8 on the Metis Andromeda network. Marketplace opens as soon as all 5,000 stars are minted.</p>
+          <p>Trading happens here in the StarLedger metaverse.</p>
         </>
       ),
       image: "/images/nft.gif",

@@ -53,6 +53,7 @@ const IndexPage: NextPage<{
         type: "Point";
       };
       id: number;
+      number: number;
       properties: {
         owner?: string;
         name: string;
@@ -77,6 +78,7 @@ const IndexPage: NextPage<{
       type: "Point";
     };
     id: number;
+    number: number;
     properties: {
       owner?: string;
       name: string;
@@ -723,7 +725,8 @@ const IndexPage: NextPage<{
   };
 
   const handleSearchResult = (id: number) => {
-    setSelectedStar(features.find((f) => f.id === id));
+    const feature = features.find((f) => f.id === id);
+    setSelectedStar(feature);
     setSearchResults([]);
     setSearchTerms("");
 
@@ -747,8 +750,9 @@ const IndexPage: NextPage<{
     const starNames = await starNameData.json();
 
     setFeatures(
-      newFeatures.map((f) => ({
+      newFeatures.map((f, i) => ({
         ...f,
+        number: i + 1,
         properties: {
           ...f.properties,
           name: starNames[f.id]?.name,
@@ -1032,14 +1036,14 @@ const IndexPage: NextPage<{
             <div className={styles.starInfo}>
               <div className={styles.starInfoField}>
                 <span className={styles.starInfoKey}>Number</span>
-                <span className={styles.starInfoValue}>{selectedStar?.id}</span>
+                <span className={styles.starInfoValue}>{selectedStar?.number}</span>
               </div>
-              <div className={styles.starInfoField}>
+              {/* <div className={styles.starInfoField}>
                 <span className={styles.starInfoKey}>Owner</span>
                 <span className={styles.starInfoValue}>
                   {selectedStar?.properties.owner || "0x3FC7FC"}
                 </span>
-              </div>
+              </div> */}
               <div className={styles.starInfoField}>
                 <span className={styles.starInfoKey}>BV</span>
                 <span className={styles.starInfoValue}>
@@ -1065,6 +1069,7 @@ const IndexPage: NextPage<{
               <Button color="primary" disabled onClick={() => handleBuy()}>
                 Not for Sale
               </Button>
+              <span>Minting Feb 8</span>
             </div>
           </div>
         </div>
